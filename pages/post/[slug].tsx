@@ -56,6 +56,88 @@ function Post({ post }: Props) {
           />
         </div>
       </article>
+      <hr className="my-5 mx-auto max-w-lg border border-yellow-500" />
+      {submitted ? (
+        <div className="my-10 mx-auto flex w-full max-w-2xl flex-col bg-yellow-500 py-10 px-5 text-white">
+          <h3 className="text-3xl font-bold">
+            Thank you for submitting your comment
+          </h3>
+          <p className="">Once it has been approved it will appear here</p>
+        </div>
+      ) : (
+        <form
+          className="my-10 mx-auto mb-10 flex max-w-2xl flex-col p-5"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <h3 className="text-md text-yellow-500">Enjoyed the article ?</h3>
+          <h4 className="text-3xl font-bold">Leave a comment below 😄</h4>
+          <hr className="mt-2 py-3" />
+          <input
+            {...register('_id')}
+            type="hidden"
+            name="_id"
+            value={post._id}
+          />
+          <label className="mb-5 block">
+            <span className="text-gray-700">Name</span>
+            <input
+              {...register('name', { required: true })}
+              className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline-none  ring-yellow-500 focus:ring-1"
+              type="text"
+              placeholder="Name"
+            />
+          </label>
+          <label className="mb-5 block">
+            <span className="text-gray-700">Email</span>
+            <input
+              {...register('email', { required: true })}
+              className="form-input mt-1 block w-full rounded border py-2 px-3 shadow outline-none  ring-yellow-500 focus:ring-1"
+              type="email"
+              placeholder="Emai"
+            />
+          </label>
+          <label className="mb-5 block">
+            <span className="text-gray-700">Comment</span>
+            <textarea
+              {...register('comment', { required: true })}
+              placeholder="Comment..."
+              rows={8}
+              className="form-textarea mt-1 block w-full rounded border py-2 px-3 shadow outline-none ring-yellow-500 focus:ring-1"
+            ></textarea>
+          </label>
+          {/* Errors */}
+          <div className="flex flex-col p-5">
+            {errors.name && (
+              <span className="text-red-500">The name field is required</span>
+            )}{' '}
+            {errors.comment && (
+              <span className="text-red-500">
+                The comment field is required
+              </span>
+            )}{' '}
+            {errors.email && (
+              <span className="text-red-500">The name email is required</span>
+            )}
+          </div>
+          <input
+            type="submit"
+            className="focus:shadow-outline cursor-pointer rounded bg-yellow-500 py-2 px-4 font-bold text-white shadow hover:bg-yellow-400 focus:outline-none"
+          />
+        </form>
+      )}
+      {/* Comments */}
+      <div className="my-10 mx-auto flex max-w-2xl flex-col space-y-2 p-10 shadow shadow-yellow-500">
+        <h3 className="text-4xl">Comments</h3>
+        <hr className="pb-2 " />
+        {post.comments.map((comment) => (
+          <div key={comment._id}>
+            <p>
+              <span className="text-yellow-500">{comment.name}: </span>
+              {comment.comment}
+            </p>
+          </div>
+        ))}
+      </div>
     </main>
   )
 }
