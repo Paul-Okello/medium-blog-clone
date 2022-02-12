@@ -3,11 +3,42 @@ import { sanityClient, urlFor } from '../../sanity'
 import { Post } from '../../typings'
 import { GetStaticProps } from 'next'
 import PortableText from 'react-portable-text'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import { useState } from 'react'
+
+interface IFormInput {
+  _id: string
+  name: string
+  email: string
+  comment: string
+}
 
 interface Props {
   post: Post
 }
 function Post({ post }: Props) {
+  const [submitted, setSubmitted] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>()
+
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    fetch(`/api/createComment`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(() => {
+        console.log(data)
+        setSubmitted(true)
+      })
+      .catch((err) => {
+        console.log(err)
+        setSubmitted(false)
+      })
+  }
+
   return (
     <main>
       <Header />
@@ -43,6 +74,9 @@ function Post({ post }: Props) {
               ),
               h2: (props: any) => (
                 <h1 className="my-5 text-xl font-bold" {...props} />
+              ),
+              h3: (props: any) => (
+                <h1 className="my-5 text-lg font-bold" {...props} />
               ),
               li: (children: any) => (
                 <li className="my-5 text-2xl font-bold">{children}</li>
@@ -175,7 +209,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 author -> {
   name,
   image
-},
+}, "comments":*[_type == "comment" && 
+             post._ref == ^._id
+             && approved == true],
 description,
 title,
 mainImage,
